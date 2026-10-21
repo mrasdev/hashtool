@@ -72,20 +72,20 @@ If `verify` finds both differences and errors, the exit code is 2.
 
 ## Acceptance criteria
 
-- [ ] Unchanged directory: exit 0, no status lines, summary shows only ok count
-- [ ] Modified content with equal size → `CHANGED`
-- [ ] Modified size → `CHANGED`, file is not hashed (verified via test double)
-- [ ] Deleted file → `MISSING`; added file → `NEW`; exit 1
-- [ ] Output lines sorted by path, status padded as specified
-- [ ] Excludes stored by `scan` are applied: files matching them are not `NEW`
-- [ ] Manifest without `scan_options` is accepted
-- [ ] Manifest file itself is never reported as `NEW`
-- [ ] `-m` with a manifest outside the directory works
-- [ ] Missing manifest, invalid JSON, unknown `format_version`, unknown
+- [ok] Unchanged directory: exit 0, no status lines, summary shows only ok count
+- [ok] Modified content with equal size → `CHANGED`
+- [ok] Modified size → `CHANGED`, file is not hashed (verified via test double)
+- [ok] Deleted file → `MISSING`; added file → `NEW`; exit 1
+- [ok] Output lines sorted by path, status padded as specified
+- [ok] Excludes stored by `scan` are applied: files matching them are not `NEW`
+- [ok] Manifest without `scan_options` is accepted
+- [ok] Manifest file itself is never reported as `NEW`
+- [ok] `-m` with a manifest outside the directory works
+- [ok] Missing manifest, invalid JSON, unknown `format_version`, unknown
       `algorithm`, missing `files` → exit 2 with a clear message on stderr
-- [ ] Unreadable file → `ERROR` line, exit 2
-- [ ] `scan` writes `scan_options`; `scan` errors exit with 2
-- [ ] Existing `scan` tests adapted only where exit codes changed
+- [ok] Unreadable file → `ERROR` line, exit 2
+- [ok] `scan` writes `scan_options`; `scan` errors exit with 2
+- [ok] Existing `scan` tests adapted only where exit codes changed
 
 ## Non-goals
 
