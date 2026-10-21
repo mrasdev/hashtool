@@ -44,7 +44,7 @@ def test_scan_refuses_existing_manifest(tree, capsys):
     main(["scan", str(tree)])
     capsys.readouterr()
 
-    assert main(["scan", str(tree)]) == 1
+    assert main(["scan", str(tree)]) == 2
     assert "--force" in capsys.readouterr().err
 
 
@@ -65,7 +65,7 @@ def test_scan_exclude_option(tree):
 
 
 def test_scan_rejects_missing_directory(tmp_path, capsys):
-    assert main(["scan", str(tmp_path / "nope")]) == 1
+    assert main(["scan", str(tmp_path / "nope")]) == 2
     assert "not a directory" in capsys.readouterr().err
 
 
