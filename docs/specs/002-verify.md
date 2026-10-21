@@ -1,6 +1,6 @@
 # 002: verify
 
-Status: approved, not implemented
+Status: approved, implemented
 Issue: #2
 
 ## Goal
