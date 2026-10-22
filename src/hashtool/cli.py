@@ -9,6 +9,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import TextIO
 
+from hashtool import __version__
 from hashtool.manifest import (
     DEFAULT_MANIFEST_NAME,
     ManifestError,
@@ -70,6 +71,7 @@ def build_parser() -> argparse.ArgumentParser:
         prog="hashtool",
         description="Create SHA-256 manifests of directory trees and verify files against them.",
     )
+    parser.add_argument("--version", action="version", version=f"hashtool {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_scan = sub.add_parser("scan", help="hash a directory tree and write a manifest")
