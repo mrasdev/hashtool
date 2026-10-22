@@ -93,7 +93,18 @@ for the AI assistant in [`CLAUDE.md`](CLAUDE.md).
 
 ## Installation
 
-Requires Python 3.12 or later and [uv](https://docs.astral.sh/uv/).
+Requires Python 3.12 or later.
+
+From a release: download the wheel from the
+[releases page](https://github.com/mrasdev/hashtool/releases) and install it
+as a command line tool:
+
+```
+uv tool install hashtool-0.1.0-py3-none-any.whl
+hashtool --version
+```
+
+From source (requires [uv](https://docs.astral.sh/uv/)):
 
 ```
 git clone https://github.com/mrasdev/hashtool.git
@@ -102,6 +113,8 @@ uv sync
 ```
 
 ## Usage
+
+`hashtool --version` prints the installed version.
 
 ```
 hashtool scan DIRECTORY [-o FILE] [--force] [-e PATTERN ...]
@@ -229,7 +242,34 @@ uv run ruff format --check .  # formatting check (as in CI)
 ```
 
 Symlink tests are skipped on Windows unless symlinks can be created
-(developer mode or administrator rights). They run in CI on Linux.
+(developer mode or administrator rights). They run in CI on Linux and on
+the Windows runners.
+
+## Releases
+
+The version is not written anywhere in the code. It is derived from the Git
+tag by [hatch-vcs](https://github.com/ofek/hatch-vcs): a tagged commit builds
+as `0.1.0`, later commits as development versions such as
+`0.1.1.dev3+g1a2b3c4`, and a source tree without Git metadata as `0.0.0`.
+
+To publish a release, tag a commit on `main` and push the tag:
+
+```
+git switch main
+git pull
+git tag -a v0.1.0 -m "hashtool 0.1.0"
+git push origin v0.1.0
+```
+
+The [release workflow](.github/workflows/release.yml) then
+
+1. builds the wheel and the source distribution and checks that their
+   version matches the tag and that the wheel contains only the package,
+2. installs the wheel into a fresh virtual environment on Ubuntu and
+   Windows, without the source tree, and runs `--version`, `scan` and
+   `verify` against a temporary directory,
+3. creates a GitHub Release with both files attached. Only this last job
+   has write access to the repository.
 
 ## Status and roadmap
 
@@ -240,7 +280,7 @@ Symlink tests are skipped on Windows unless symlinks can be created
 - [x] Dependabot, secret scanning
 - [x] Ruleset: pull requests and passing status checks required
 - [x] Feature branch, pull request, squash merge
-- [ ] Tag-based release workflow, wheel tested in a fresh virtual environment
+- [x] Tag-based release workflow, wheel tested in a fresh virtual environment
 
 ## License
 

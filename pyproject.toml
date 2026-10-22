@@ -1,16 +1,15 @@
 [build-system]
-requires = ["setuptools>=84.0.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling>=1.27", "hatch-vcs>=0.4"]
+build-backend = "hatchling.build"
 
 [project]
 name = "hashtool"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Create SHA-256 manifests of directory trees and verify files against them."
 requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICENSE"]
 dependencies = []
-
 
 [project.scripts]
 hashtool = "hashtool.cli:main"
@@ -23,8 +22,12 @@ dev = [
     "build",
 ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hashtool"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

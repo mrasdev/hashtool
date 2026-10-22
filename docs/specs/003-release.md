@@ -38,7 +38,8 @@ git push origin v0.1.0
    the Git tag. Between tags, hatch-vcs produces a development version
    (e.g. `0.1.1.dev3+g1a2b3c4`).
 3. A checkout without any reachable tag must still build and install
-   (fallback version `0.0.0`), so local development and CI never depend on tags.
+   (hatch-vcs then produces `0.0.1.devN+g<hash>`); a source tree without Git
+   metadata falls back to `0.0.0`. Local development and CI never depend on tags.
 4. The wheel contains exactly the package from `src/hashtool` (declared
    explicitly, not left to auto-detection).
 5. The CI workflow checks out with `fetch-depth: 0`, so CI builds see the tags.

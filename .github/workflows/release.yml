@@ -1,0 +1,106 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78  # v7
+        with:
+          enable-cache: false
+      - run: uv build
+      - name: Check version matches tag
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          ls dist
+          test -f "dist/hashtool-${version}-py3-none-any.whl"
+          test -f "dist/hashtool-${version}.tar.gz"
+      - name: Check wheel contains only the package
+        run: |
+          if unzip -Z1 dist/*.whl | grep -Ev '^(hashtool/|hashtool-[^/]+\.dist-info/)'; then
+            echo "Unexpected files in wheel (listed above)"
+            exit 1
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  test-wheel:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # No checkout: only the built wheel is available.
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8
+        with:
+          name: dist
+          path: dist
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78  # v7
+        with:
+          python-version: "3.12"
+          enable-cache: false
+      - name: Install wheel into fresh virtual environment
+        run: |
+          uv venv "$RUNNER_TEMP/venv"
+          uv pip install --python "$RUNNER_TEMP/venv" dist/*.whl
+      - name: Smoke test
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then bin="$RUNNER_TEMP/venv/Scripts"; else bin="$RUNNER_TEMP/venv/bin"; fi
+          ht="$bin/hashtool"
+
+          actual="$("$ht" --version | tr -d '\r')"
+          echo "$actual"
+          test "$actual" = "hashtool ${GITHUB_REF_NAME#v}"
+
+          d="$RUNNER_TEMP/smoke"
+          mkdir -p "$d/sub"
+          echo a > "$d/a.txt"
+          echo b > "$d/sub/b.txt"
+          "$ht" scan "$d" --no-progress
+          "$ht" verify "$d" --no-progress
+
+          echo changed >> "$d/a.txt"
+          rc=0
+          "$ht" verify "$d" --no-progress || rc=$?
+          test "$rc" -eq 1
+
+  release:
+    needs: test-wheel
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8
+        with:
+          name: dist
+          path: dist
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --verify-tag \
+            --title "hashtool ${GITHUB_REF_NAME#v}" \
+            --notes "Wheel and source distribution built from tag $GITHUB_REF_NAME."
