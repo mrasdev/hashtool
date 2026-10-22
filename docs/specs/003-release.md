@@ -1,7 +1,7 @@
 # 003: release
 
-Status: approved, not implemented
-Issue: #5
+   Status: approved, implemented
+   Issue: #5
 
 ## Goal
 
@@ -75,15 +75,16 @@ Three jobs, all actions pinned to commit SHAs, `persist-credentials: false`,
 
 ## Acceptance criteria
 
-- [ ] `uv sync` and `uv run pytest` work locally on a checkout without tags
-- [ ] `uv build` on a tagged commit produces files with exactly that version
-- [ ] `hashtool --version` prints `hashtool <version>`; covered by a test
-- [ ] CI (`ci.yml`) stays green with `fetch-depth: 0`
-- [ ] Wheel contains `hashtool/` package only (no tests, no docs)
-- [ ] Pushing `v0.1.0` creates a GitHub Release with `.whl` and `.tar.gz`
-- [ ] test-wheel runs on Ubuntu and Windows without a source checkout
-- [ ] A tag whose version does not match the built version fails in build
-- [ ] Only the release job has write permissions
+- [ok] `uv sync` and `uv run pytest` work locally on a checkout without tags
+- [ok] `uv build` on a tagged commit produces files with exactly that version
+- [ok] `hashtool --version` prints `hashtool <version>`; covered by a test
+- [ok] CI (`ci.yml`) stays green with `fetch-depth: 0`
+- [ok] Wheel contains `hashtool/` package only (no tests, no docs)
+- [ok] Pushing `v0.1.0` creates a GitHub Release with `.whl` and `.tar.gz`
+- [ok] test-wheel runs on Ubuntu and Windows without a source checkout
+- [nok] A tag whose version does not match the built version fails in build
+  --> check in place, not exercised
+- [ok] Only the release job has write permissions
 
 ## Non-goals
 
