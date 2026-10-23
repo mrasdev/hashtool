@@ -19,7 +19,6 @@ dev = [
     "pytest",
     "ruff",
     "pre-commit",
-    "build",
 ]
 
 [tool.hatch.version]

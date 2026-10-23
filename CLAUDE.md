@@ -13,7 +13,7 @@ Practice project for CI and AI-assisted development, see `README.md`.
 
 - `src/hashtool/manifest.py`: scanning, building, writing and reading manifests (no CLI code, no printing)
 - `src/hashtool/cli.py`: argparse, output, exit codes
-- `tests/`: pytest, one test file per module
+- `tests/`: pytest, test files grouped by module or feature
 - `docs/specs/NNN-<feature>.md`: specification per feature, written and approved before implementation
 
 ## Commands

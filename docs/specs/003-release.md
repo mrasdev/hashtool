@@ -1,7 +1,7 @@
 # 003: release
 
-   Status: approved, implemented
-   Issue: #5
+Status: approved, implemented
+Issue: #5
 
 ## Goal
 
