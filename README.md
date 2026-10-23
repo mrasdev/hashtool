@@ -271,6 +271,9 @@ The [release workflow](.github/workflows/release.yml) then
 3. creates a GitHub Release with both files attached. Only this last job
    has write access to the repository.
 
+Version tags (`v*`) are protected by a tag ruleset: they cannot be deleted
+or moved to another commit once pushed.
+
 ## Status and roadmap
 
 - [x] Project setup, tests, linting, pre-commit
